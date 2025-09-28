@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Simulation Results</h1>
+            <div class="result-details">
+                <p><strong>Simulator:</strong> {{ simulator }}</p>
+                <p><strong>Config File:</strong> {{ config_file }}</p>
+                <p><strong>Output Directory:</strong> {{ output_dir }}</p>
+            </div>
+            {% if report_files %}
+                <h2>Visualizations</h2>
+                <div class="visualizations">
+                    {% for file in report_files %}
+                        <div class="visualization">
+                            <h3>{{ file.split('/')[-1].replace('.png', '') | replace('_', ' ') | title }}</h3>
+                            <img src="{{ url_for('static', filename=file) }}" alt="{{ file.split('/')[-1] }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="message info">No visualizations generated.</p>
+            {% endif %}
+            <a href="{{ url_for('simulate') }}" class="back-link">Run Another Simulation</a>
+        </div>
+        <div class="theme-toggle">
+            <input type="checkbox" id="theme-switch">
+            <label for="theme-switch">Toggle Theme</label>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,242 @@
+:root {
+    --primary-color: #007bff;
+    --background-light: #f4f7fa;
+    --background-dark: #1e2a44;
+    --card-light: #ffffff;
+    --card-dark: #2a3b5b;
+    --text-light: #333333;
+    --text-dark: #d1d5db;
+    --accent-color: #00cc99;
+    --error-color: #e63946;
+    --info-color: #457b9d;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background-light);
+    color: var(--text-light);
+    transition: background 0.3s, color 0.3s;
+}
+
+body.dark-theme {
+    background: var(--background-dark);
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.card {
+    background: var(--card-light);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.dark-theme .card {
+    background: var(--card-dark);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem;
+}
+
+h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-group select,
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.dark-theme .form-group select,
+.dark-theme .form-group input[type="text"] {
+    border-color: #4b5e7e;
+    background: #3a4a6b;
+    color: var(--text-dark);
+}
+
+.form-group select:focus,
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+
+.message {
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: var(--error-color);
+}
+
+.message.info {
+    background: #d1ecf1;
+    color: var(--info-color);
+}
+
+.dark-theme .message.error {
+    background: #5c2d2f;
+}
+
+.dark-theme .message.info {
+    background: #2b4a5b;
+}
+
+.result-details p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.visualizations {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.visualization img {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: white;
+    transition: transform 0.3s;
+}
+
+.dark-theme .visualization img {
+    border-color: #4b5e7e;
+    background: #3a4a6b;
+}
+
+.visualization img:hover {
+    transform: scale(1.02);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.back-link:hover {
+    color: #0056b3;
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.theme-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.dark-theme .theme-toggle label {
+    color: var(--text-dark);
+}
+
+.theme-toggle label::before {
+    content: '🌙';
+    font-size: 1.2rem;
+}
+
+.theme-toggle input:checked + label::before {
+    content: '☀️';
+}
+
+.theme-toggle input:checked + label ~ body {
+    background: var(--background-dark);
+    color: var(--text-dark);
+}
+
+@media (max-width: 600px) {
+    .container {
+        margin: 1rem;
+    }
+    .card {
+        padding: 1.5rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+}
