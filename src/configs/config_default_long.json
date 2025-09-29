@@ -5,8 +5,8 @@
     "limiting_biomass": 4200.0,
     "initial_growth_rate": 0.323,
 
-    "alpha": 0.85,
+    "alpha": 1.0,
     "beta": 1.0,
     "gamma": 1.0,
-    "delta": 0.69
+    "delta": 1.0
 }

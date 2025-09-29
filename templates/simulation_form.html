@@ -20,6 +20,7 @@
             <form method="POST" action="{{ url_for('simulate') }}">
                 <div class="form-group">
                     <label for="simulator">Simulator</label>
+                    <p>! YieldPredictor always assumes long term (1 year) cultivation</p>
                     <select name="simulator" id="simulator" required>
                         <option value="GM">Growth Modeler (GM)</option>
                         <option value="YP">Yield Predictor (YP)</option>

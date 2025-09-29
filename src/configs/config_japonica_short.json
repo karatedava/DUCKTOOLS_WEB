@@ -1,12 +1,12 @@
 {
-    "cultivation_time": 100,
+    "cultivation_time": 30,
     "integration_step": 0.1,
 
     "limiting_biomass": 1300.0,
     "initial_growth_rate": 0.323,
 
-    "alpha": 1.0,
+    "alpha": 0.85,
     "beta": 1.0,
     "gamma": 1.0,
-    "delta": 1.0
+    "delta": 0.69
 }
