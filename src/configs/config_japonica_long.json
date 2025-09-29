@@ -1,8 +1,8 @@
 {
-    "cultivation_time": 190,
+    "cultivation_time": 100,
     "integration_step": 0.1,
 
-    "limiting_biomass": 4200.0,
+    "limiting_biomass": 1300.0,
     "initial_growth_rate": 0.323,
 
     "alpha": 0.85,
