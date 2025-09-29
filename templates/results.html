@@ -20,7 +20,6 @@
                 <div class="visualizations">
                     {% for file in report_files %}
                         <div class="visualization">
-                            <h3>{{ file.split('/')[-1].replace('.png', '') | replace('_', ' ') | title }}</h3>
                             <img src="{{ url_for('static', filename=file) }}" alt="{{ file.split('/')[-1] }}">
                         </div>
                     {% endfor %}
@@ -28,6 +27,12 @@
             {% else %}
                 <p class="message info">No visualizations generated.</p>
             {% endif %}
+            <h2>Download Data</h2>
+            <div class="downloads">
+                <p><a href="{{ url_for('download_file', filename=bm_csv_file) }}" class="download-link">Download Biomass Data (CSV)</a></p>
+                <p><a href="{{ url_for('download_file', filename=hv_csv_file) }}" class="download-link">Download Harvest Data (CSV)</a></p>
+                <p><a href="{{ url_for('download_file', filename=gs_csv_file) }}" class="download-link">Download grid search Data (CSV)</a></p>
+            </div>
             <a href="{{ url_for('simulate') }}" class="back-link">Run Another Simulation</a>
         </div>
         <div class="theme-toggle">

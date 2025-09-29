@@ -5,14 +5,14 @@ import json
 
 class Simulator():
 
-    def __init__(self, config_path:Path, data_dir:Path):
+    def __init__(self, config_path:Path, data_dir:Path, HPs=np.arange(1,10,1), HRs=np.arange(0.1,0.8,0.1), W0s= np.arange(100,1000,100)):
         
         self.parameters = json.load(config_path.open())
         self.data_dir = data_dir
 
-        self.HPs = np.arange(1,10,1)
-        self.HRs = np.arange(0.1,0.8,0.1)
-        self.W0s = np.arange(100,1000,100)
+        self.HPs = HPs
+        self.HRs = HRs
+        self.W0s = W0s
         
     def _effective_gr_(self) -> float:
 

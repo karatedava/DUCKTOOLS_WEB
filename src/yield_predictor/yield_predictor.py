@@ -16,9 +16,9 @@ WET_DRY_COEF = 16.66667
 
 class YieldPredictor(Simulator):
 
-    def __init__(self, config_path:Path, data_dir:Path):
+    def __init__(self, config_path:Path, data_dir:Path, HPs, HRs, W0s):
 
-        super().__init__(config_path, data_dir)
+        super().__init__(config_path, data_dir, HPs, HRs, W0s)
     
         self.model = torch.jit.load(DEPENDENCIES_PATH / 'harvest_model.pt').to('cpu')
         self.model.eval()

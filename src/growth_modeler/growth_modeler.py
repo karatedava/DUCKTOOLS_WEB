@@ -9,9 +9,9 @@ from src.simulator import Simulator
 
 class GrowthModeler(Simulator):
 
-    def __init__(self, config_path:Path, data_dir:Path):
+    def __init__(self, config_path:Path, data_dir:Path, HPs, HRs, W0s):
 
-        super().__init__(config_path, data_dir)
+        super().__init__(config_path, data_dir, HPs, HRs, W0s)
 
     def run_simulation(self) -> Path:
 

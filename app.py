@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from pathlib import Path
 import json
+import numpy as np
 
 from src.growth_modeler.growth_modeler import GrowthModeler
 from src.yield_predictor.yield_predictor import YieldPredictor
@@ -15,10 +16,28 @@ def simulate():
     if request.method == 'POST':
         try:
             # Extract form data
+
             simulator = request.form.get('simulator').upper()
             config_file = request.form.get('config_file')
             generate_report = request.form.get('generate_report') == 'on'
-            output_dir = request.form.get('output_dir', str(OUTPUT_DIR))
+            output_dir = str(OUTPUT_DIR)
+            # output_dir = request.form.get('output_dir', str(OUTPUT_DIR))
+
+            hp_min = float(request.form['hp_min'])
+            hp_max = float(request.form['hp_max'])
+            hr_min = float(request.form['hr_min'])
+            hr_max = float(request.form['hr_max'])
+            w0_min = float(request.form['w0_min'])
+            w0_max = float(request.form['w0_max'])
+
+            # Define ranges using slider values
+            HPs = np.arange(hp_min, hp_max + 1, 1)  # +1 to include max in range
+            HRs = np.arange(hr_min, hr_max , 0.1)  # +0.1 to include max
+            W0s = np.arange(w0_min, w0_max + 100, 100)  # +100 to include max
+
+            if hp_min > hp_max or hr_min > hr_max or w0_min > w0_max:
+                flash('Minimum values must be less than or equal to maximum values.', 'error')
+                return render_template('index.html', config_files=config_files)
 
             # Validate inputs
             if simulator not in ['GM', 'YP']:
@@ -39,9 +58,9 @@ def simulate():
 
             # Initialize and run model
             if simulator == 'GM':
-                model = GrowthModeler(config_path, output_path)
+                model = GrowthModeler(config_path, output_path, HPs, HRs, W0s)
             else:
-                model = YieldPredictor(config_path, output_path)
+                model = YieldPredictor(config_path, output_path, HPs, HRs, W0s)
 
             simulation_report_fname = model.run_simulation()
 
@@ -59,7 +78,11 @@ def simulate():
                                 simulator=simulator, 
                                 config_file=config_file, 
                                 output_dir=output_dir, 
-                                report_files=report_files)
+                                report_files=report_files,
+                                bm_csv_file=f'tmp/outputs/{simulation_report_fname}.biomass_df.csv',
+                                hv_csv_file=f'tmp/outputs/{simulation_report_fname}.harvest_df.csv',
+                                gs_csv_file=f'tmp/outputs/{simulation_report_fname}'
+                                )
 
         except Exception as e:
             flash(f"An error occurred: {str(e)}", 'error')
@@ -68,6 +91,10 @@ def simulate():
     # GET request: Render the simulation form
     config_files = [f.name for f in Path(CONFIG_FOLDER).glob('*.json')]
     return render_template('simulation_form.html', config_files=config_files,OUTPUT_DIR=str(OUTPUT_DIR))
+
+@app.route('/<path:filename>')
+def download_file(filename):
+    return send_from_directory('./', filename, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=False)

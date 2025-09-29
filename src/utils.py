@@ -47,10 +47,11 @@ def plot_curves(biomass_path:Path, harvest_path:Path, fname:str) -> None:
     sns.set()
     sns.lineplot(data=biomass_df,x='time',y='biomass',c='green', label='biomass left')
     sns.lineplot(data=harvest_df,x='time',y='biomass',c='red',marker='o', label='biomass harvested')
-    plt.xlabel('time')
+    plt.xlabel('cultivation time [day]')
     plt.ylabel('biomass [g/m^2]')
 
     plt.legend()
+    plt.title('Cultivation curves', fontsize=20)
 
     plt.savefig(DATA_PATH / f'{fname}_curves.png')
     plt.close()
@@ -99,11 +100,6 @@ def smooth_heatmap(gs_report:pd.DataFrame, x='HP', y='HR', z='HARVEST', cmap='pl
     # Customize the plot
     ax.set_xlabel(x, fontsize=16, labelpad=10)
     ax.set_ylabel(y, fontsize=16, labelpad=10)
-    ax.set_xticks([])
-    ax.set_yticks([])
-    
-    # Set title
-    #plt.title(f'2D Contour Plot of {z} vs {x} and {y}', fontsize=14, pad=15)
     
     # Adjust colorbar
     cbar = fig.colorbar(contour, ax=ax, label=z, shrink=0.8, pad=0.1)
@@ -111,7 +107,11 @@ def smooth_heatmap(gs_report:pd.DataFrame, x='HP', y='HR', z='HARVEST', cmap='pl
     
     # Add grid for better readability
     ax.grid(True, linestyle='--', alpha=0.7)
+
+    plt.xlabel('Harvest period [day]', fontsize=16)
+    plt.ylabel('Harvest ratio [%]', fontsize=16)
     
+    plt.title('Harvesting RATIO - PERIOD heatmap',fontsize=20)
     # Tight layout to avoid overlap
     plt.tight_layout()
     
@@ -147,6 +147,9 @@ def heatmap(gs_report:pd.DataFrame, x='HP', y='HR', z='HARVEST', cmap='plasma', 
     plt.tick_params(axis='x', labelsize=16)  # Font size for x-axis ticks
     plt.tick_params(axis='y', labelsize=16)  # Font size for y-axis ticks
 
+    plt.title('Harvesting RATIO - PERIOD heatmap exact',fontsize=20)
+    plt.tight_layout()
+
     if fname:
         plt.savefig(DATA_PATH / f'{fname}_HMap.png')
     else:
@@ -159,6 +162,7 @@ def table(gs_report:pd.DataFrame, N:int=5, fname:str = None):
     
     Harvest_sorted = gs_report.sort_values(by='HARVEST', ascending=False)
     top_n_df = Harvest_sorted.head(N)
+    top_n_df = top_n_df.rename(columns={'HP': 'HP [day]', 'HR': 'HR', 'IDENS': 'IDENS [g/m2]', 'HARVEST': 'HARVEST[g/m2]'})
 
     _, ax = plt.subplots(figsize=(8, N * 0.5))  # Adjust height based on number of rows
     
@@ -191,7 +195,6 @@ def table(gs_report:pd.DataFrame, N:int=5, fname:str = None):
         plt.show()
     plt.close()
 
-
 def gen_report(report_path):
     """
     Generate PNG heatmap files, a table, and optionally biomass/harvest curves.
@@ -212,26 +215,12 @@ def gen_report(report_path):
     # List to store generated file paths
     generated_files = []
 
-    # Generate heatmap
-    heatmap(gs_report=report_df, fname=filename)
-    heatmap_path = DATA_PATH / f'{filename}_HMap.png'
-    static_heatmap_path = static_images_dir / f'{filename}_HMap.png'
-    heatmap_path.rename(static_heatmap_path)  # Move to static/images
-    generated_files.append(f'images/{filename}_HMap.png')
-
     # Generate smooth heatmap
     smooth_heatmap(gs_report=report_df, fname=filename, scatter_indices=5)
     smooth_heatmap_path = DATA_PATH / f'{filename}_HMapSmooth.png'
     static_smooth_heatmap_path = static_images_dir / f'{filename}_HMapSmooth.png'
     smooth_heatmap_path.rename(static_smooth_heatmap_path)  # Move to static/images
     generated_files.append(f'images/{filename}_HMapSmooth.png')
-
-    # Generate table
-    table(gs_report=report_df, N=5, fname=filename)
-    table_path = DATA_PATH / f'{filename}_table.png'
-    static_table_path = static_images_dir / f'{filename}_table.png'
-    table_path.rename(static_table_path)  # Move to static/images
-    generated_files.append(f'images/{filename}_table.png')
 
     # Generate biomass/harvest curves if available
     bc_file = f"{report_path}.biomass_df.csv"
@@ -247,5 +236,12 @@ def gen_report(report_path):
         static_curves_path = static_images_dir / f'{filename}_curves.png'
         curves_path.rename(static_curves_path)  # Move to static/images
         generated_files.append(f'images/{filename}_curves.png')
+    
+    # Generate table
+    table(gs_report=report_df, N=5, fname=filename)
+    table_path = DATA_PATH / f'{filename}_table.png'
+    static_table_path = static_images_dir / f'{filename}_table.png'
+    table_path.rename(static_table_path)  # Move to static/images
+    generated_files.append(f'images/{filename}_table.png')
 
     return generated_files

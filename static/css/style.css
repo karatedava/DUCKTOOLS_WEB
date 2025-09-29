@@ -156,15 +156,23 @@ button:hover {
 
 .visualizations {
     display: grid;
-    gap: 1.5rem;
+    gap: 2rem; /* Increased gap for better spacing */
+    margin-bottom: 2rem;
+}
+
+.visualization {
+    text-align: center; /* Center image and title */
 }
 
 .visualization img {
-    width: 100%;
+    max-width: 100%; /* Prevent overflow */
+    height: auto; /* Preserve aspect ratio */
     border-radius: 8px;
     border: 1px solid #d1d5db;
     background: white;
     transition: transform 0.3s;
+    margin: 1rem auto; /* Add margin to ensure title visibility */
+    display: block; /* Ensure block display for centering */
 }
 
 .dark-theme .visualization img {
@@ -174,6 +182,16 @@ button:hover {
 
 .visualization img:hover {
     transform: scale(1.02);
+}
+
+.visualization h3 {
+    font-size: 1.2rem;
+    margin: 0.5rem 0 1rem;
+    color: var(--text-light);
+}
+
+.dark-theme .visualization h3 {
+    color: var(--text-dark);
 }
 
 .back-link {
@@ -224,11 +242,6 @@ button:hover {
     content: '☀️';
 }
 
-.theme-toggle input:checked + label ~ body {
-    background: var(--background-dark);
-    color: var(--text-dark);
-}
-
 @media (max-width: 600px) {
     .container {
         margin: 1rem;
@@ -238,5 +251,8 @@ button:hover {
     }
     h1 {
         font-size: 1.5rem;
+    }
+    .visualization img {
+        margin: 0.5rem auto; /* Reduced margin for smaller screens */
     }
 }
