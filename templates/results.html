@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulation Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Urbanist:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -31,13 +32,9 @@
             <div class="downloads">
                 <p><a href="{{ url_for('download_file', filename=bm_csv_file) }}" class="download-link">Download Biomass Data (CSV)</a></p>
                 <p><a href="{{ url_for('download_file', filename=hv_csv_file) }}" class="download-link">Download Harvest Data (CSV)</a></p>
-                <p><a href="{{ url_for('download_file', filename=gs_csv_file) }}" class="download-link">Download grid search Data (CSV)</a></p>
+                <p><a href="{{ url_for('download_file', filename=gs_csv_file) }}" class="download-link">Download Grid Search Data (CSV)</a></p>
             </div>
-            <a href="{{ url_for('simulate') }}" class="back-link">Run Another Simulation</a>
-        </div>
-        <div class="theme-toggle">
-            <input type="checkbox" id="theme-switch">
-            <label for="theme-switch">Toggle Theme</label>
+            <a href="{{ url_for('simulate_1') }}" class="back-link">Run Another Simulation</a>
         </div>
     </div>
 </body>

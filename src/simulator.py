@@ -17,12 +17,9 @@ class Simulator():
     def _effective_gr_(self) -> float:
 
         r0 = self.parameters['initial_growth_rate'] 
-        alpha = self.parameters['alpha'] 
-        beta = self.parameters['beta'] 
-        gamma = self.parameters['gamma'] 
-        delta = self.parameters['delta'] 
+        growth_const = self.parameters['growth_const']
 
-        eff_gr = r0 * alpha * beta * gamma * delta
+        eff_gr = r0 * growth_const
 
         return eff_gr
 

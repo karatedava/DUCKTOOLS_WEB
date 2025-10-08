@@ -26,7 +26,7 @@ class YieldPredictor(Simulator):
     
     def run_simulation(self) -> Path:
 
-        fname = f'YP_ct.year.WL.{self.parameters['limiting_biomass']}.r0.{self.parameters['initial_growth_rate']}'
+        fname = f'YP_ct.gc.{self.parameters['growth_const']}'
         filepath = self.data_dir / fname
 
         header = 'HP\tHR\tIDENS\tHARVEST\n'

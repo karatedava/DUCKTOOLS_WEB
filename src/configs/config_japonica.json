@@ -1,0 +1,8 @@
+{
+    "integration_step": 0.1,
+
+    "limiting_biomass": 1300.0,
+    "initial_growth_rate": 0.323,
+
+    "growth_const": 0.875
+}

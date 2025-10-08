@@ -9,9 +9,12 @@ from src.simulator import Simulator
 
 class GrowthModeler(Simulator):
 
-    def __init__(self, config_path:Path, data_dir:Path, HPs, HRs, W0s):
+    def __init__(self,cultivation_time:int, limiting_biomass:int, config_path:Path, data_dir:Path, HPs, HRs, W0s):
 
         super().__init__(config_path, data_dir, HPs, HRs, W0s)
+
+        self.cultivation_time = cultivation_time
+        self.lb = limiting_biomass
 
     def run_simulation(self) -> Path:
 
@@ -20,7 +23,7 @@ class GrowthModeler(Simulator):
         - returns path to report file for further statistical analysis
         """
 
-        fname = f'GM_ct.{self.parameters['cultivation_time']}.WL.{self.parameters['limiting_biomass']}.r0.{self.parameters['initial_growth_rate']}'
+        fname = f'GM_ct.{self.cultivation_time}.WL.{self.lb}.gc.{self.parameters['growth_const']}'
         filepath = self.data_dir / fname
 
         header = 'HP\tHR\tIDENS\tHARVEST\n'
@@ -62,7 +65,7 @@ class GrowthModeler(Simulator):
         """
 
         dt = self.parameters['integration_step']
-        cultivation_time = self.parameters['cultivation_time']
+        cultivation_time = self.cultivation_time
         times = np.arange(0,cultivation_time + dt, dt)
         biomass_values = []
         harvest_values = []
@@ -102,6 +105,6 @@ class GrowthModeler(Simulator):
     def _dW_(self, eff_gr, Biomass):
 
         dt = self.parameters['integration_step']
-        WL = self.parameters['limiting_biomass']
+        WL = self.lb
 
         return eff_gr * Biomass * (1 - Biomass / WL) * dt

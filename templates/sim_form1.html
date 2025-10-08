@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GENERAL SIMULATOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Urbanist:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <a href="{{ url_for('intro') }}" class="back-link">Back to Intro</a>
+            <h1>DUCKTOOLS - general simulator</h1>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p class="message {{ category }}">{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <p class="intro-subtitle">Computes optimal cultivation approach, usable for any scale</p>
+            <form method="POST" action="{{ url_for('simulate_1') }}">
+                <div class="form-group">
+                    <label for="simulator">Simulator Selection</label>
+                    <select name="simulator" id="simulator" required>
+                        <option value="GM">Growth Modeler (GM)</option>
+                        <option value="YP">Yield Predictor (YP)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="config_file">Configuration File Selection</label>
+                    <p>includes plant-specific growth parameters</p>
+                    <select name="config_file" id="config_file" required>
+                        {% for file in config_files %}
+                            <option value="{{ file }}">{{ file }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="c_time">Cultivation Time [day]</label>
+                    <p>Only for GM, YP is fixed on 360</p>
+                    <div class="slider-container">
+                        <div id="ctime_slider"></div>
+                        <div class="slider-values">
+                            <span>Min: 10</span>
+                            <span>Current: <output id="ctime_value">10</output></span>
+                            <span>Max: 360</span>
+                        </div>
+                        <input type="hidden" name="c_time" id="c_time" value="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lb">Limiting Biomass [g/m2]</label>
+                    <p>default value is 1300</p>
+                    <div class="slider-container">
+                        <div id="lb_slider"></div>
+                        <div class="slider-values">
+                            <span>Min: 1000</span>
+                            <span>Current: <output id="lb_value">1300</output></span>
+                            <span>Max: 5000</span>
+                        </div>
+                        <input type="hidden" name="lb" id="lb" value="1300">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="hp_range">Harvesting Period Range [day]</label>
+                    <div class="slider-container">
+                        <div id="hp_range"></div>
+                        <div class="slider-values">
+                            <span>Min: <output id="hp_min_value">1</output></span>
+                            <span>Max: <output id="hp_max_value">9</output></span>
+                        </div>
+                        <input type="hidden" name="hp_min" id="hp_min">
+                        <input type="hidden" name="hp_max" id="hp_max">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="hr_range">Harvesting Ratio Range</label>
+                    <div class="slider-container">
+                        <div id="hr_range"></div>
+                        <div class="slider-values">
+                            <span>Min: <output id="hr_min_value">0.1</output></span>
+                            <span>Max: <output id="hr_max_value">0.7</output></span>
+                        </div>
+                        <input type="hidden" name="hr_min" id="hr_min">
+                        <input type="hidden" name="hr_max" id="hr_max">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="w0_range">Initial Density Range [g/m2]</label>
+                    <div class="slider-container">
+                        <div id="w0_range"></div>
+                        <div class="slider-values">
+                            <span>Min: <output id="w0_min_value">100</output></span>
+                            <span>Max: <output id="w0_max_value">900</output></span>
+                        </div>
+                        <input type="hidden" name="w0_min" id="w0_min">
+                        <input type="hidden" name="w0_max" id="w0_max">
+                    </div>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" name="generate_report" id="generate_report" checked>
+                    <label for="generate_report">Generate Visualizations</label>
+                </div>
+                <button type="submit">Run Simulation</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script>
+        // Initialize noUiSlider for Cultivation Time (single value slider)
+        const ctimeSlider = document.getElementById('ctime_slider');
+        noUiSlider.create(ctimeSlider, {
+            start: [100], // Single handle starting at 10
+            connect: true, // Connect the single handle to the track
+            range: { 'min': 10, 'max': 360 },
+            step: 10,
+            format: { to: value => Number(value).toFixed(0), from: Number }
+        });
+        ctimeSlider.noUiSlider.on('update', function (values, handle) {
+            const singleValue = values[0]; // Single value from the slider
+            document.getElementById('ctime_value').textContent = singleValue; // Update current value display
+            document.getElementById('c_time').value = singleValue; // Update hidden input for form
+        });
+
+        // Initialize noUiSlider for limiting biomass (single value slider)
+        const lbSlider = document.getElementById('lb_slider');
+        noUiSlider.create(lbSlider, {
+            start: [1300], // Single handle starting at 10
+            connect: true, // Connect the single handle to the track
+            range: { 'min': 1000, 'max': 5000 },
+            step: 100,
+            format: { to: value => Number(value).toFixed(0), from: Number }
+        });
+        lbSlider.noUiSlider.on('update', function (values, handle) {
+            const singleValue = values[0]; // Single value from the slider
+            document.getElementById('lb_value').textContent = singleValue; // Update current value display
+            document.getElementById('lb').value = singleValue; // Update hidden input for form
+        });
+
+        // Initialize noUiSlider for Harvesting Period Range (dual-handle range slider)
+        const hpSlider = document.getElementById('hp_range');
+        noUiSlider.create(hpSlider, {
+            start: [1, 9],
+            connect: true,
+            range: { 'min': 1, 'max': 9 },
+            step: 1,
+            margin: 1,
+            format: { to: value => Number(value).toFixed(0), from: Number }
+        });
+        hpSlider.noUiSlider.on('update', function (values, handle) {
+            document.getElementById('hp_min_value').textContent = values[0];
+            document.getElementById('hp_max_value').textContent = values[1];
+            document.getElementById('hp_min').value = values[0];
+            document.getElementById('hp_max').value = values[1];
+        });
+
+        // Initialize noUiSlider for Harvesting Ratio Range (dual-handle range slider)
+        const hrSlider = document.getElementById('hr_range');
+        noUiSlider.create(hrSlider, {
+            start: [0.1, 0.7],
+            connect: true,
+            range: { 'min': 0.1, 'max': 0.7 },
+            step: 0.1,
+            margin: 0.1,
+            format: { to: value => Number(value).toFixed(1), from: Number }
+        });
+        hrSlider.noUiSlider.on('update', function (values, handle) {
+            document.getElementById('hr_min_value').textContent = values[0];
+            document.getElementById('hr_max_value').textContent = values[1];
+            document.getElementById('hr_min').value = values[0];
+            document.getElementById('hr_max').value = values[1];
+        });
+
+        // Initialize noUiSlider for Initial Density Range (dual-handle range slider)
+        const w0Slider = document.getElementById('w0_range');
+        noUiSlider.create(w0Slider, {
+            start: [100, 900],
+            connect: true,
+            range: { 'min': 100, 'max': 900 },
+            step: 100,
+            margin: 100,
+            format: { to: value => Number(value).toFixed(0), from: Number }
+        });
+        w0Slider.noUiSlider.on('update', function (values, handle) {
+            document.getElementById('w0_min_value').textContent = values[0];
+            document.getElementById('w0_max_value').textContent = values[1];
+            document.getElementById('w0_min').value = values[0];
+            document.getElementById('w0_max').value = values[1];
+        });
+    </script>
+</body>
+</html>

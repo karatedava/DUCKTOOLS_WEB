@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuckTOOLS - Web-based Implementation V0.01</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Urbanist:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='graphics/LOGO.png') }}" alt="DuckEYE Logo">
+            <img src="{{ url_for('static', filename='graphics/igem_brno_logo.png') }}" alt="iGEM BRNO Logo">
+        </div>
+        <h1 class="intro-title">Welcome to DuckTOOLS</h1>
+        <p class="intro-subtitle">Developed by iGEM BRNO for efficient in-silico duckweed cultivation design.</p>
+        <p>for more details on how model works, read the <a href="https://github.com/karatedava/DUCKTOOLS" class="button">GitHub page</a></p>
+
+        <hr class="section-divider">
+
+        <div class="card">
+            <h2>CHOOSE YOUR CASE BELOW:</h2>
+            <div class="simulation-option">
+                <h3>General Cultivation Design</h3>
+                <p>Design efficient cultivation for any scale and setup</p>
+                <a href="{{ url_for('simulate_1') }}" class="button">TAKE ME HERE !</a>
+            </div>
+
+            <hr class="section-divider">
+            
+            <div class="simulation-option">
+                <h3>Specific Cultivation Design</h3>
+                <p>You have a tray and idea of desired yield ? here you can find out your optimal harvesting strategy and cultivation time !</p>
+                <a href="{{ url_for('simulate_2') }}" class="button">TAKE ME HERE !</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
